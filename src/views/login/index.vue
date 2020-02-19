@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { login, getSmsCode } from '@/api/user'
+import { login, sendSmsCode } from '@/api/user'
 import { validate } from 'vee-validate'
 export default {
   name: 'LoginPage',
@@ -110,7 +110,8 @@ export default {
       try {
         const res = await login(user)
         console.log(res)
-        // 提示成功
+        this.$store.commit('setUser', res.data.data)
+        // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登录成功')
       } catch (err) {
         console.log('登录失败', err)
@@ -132,7 +133,7 @@ export default {
         // 2. 显示倒计时
         this.isCountDownShow = true
         // 3. 请求发送短信验证码
-        await getSmsCode(mobile)
+        await sendSmsCode(mobile)
       } catch (err) {
         console.log(err)
         // 关闭验证码显示
